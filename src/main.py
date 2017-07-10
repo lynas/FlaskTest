@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -21,6 +21,12 @@ def getNumber(postId):
 @app.route("/postTest", methods=['POST'])
 def postTest():
     return "Post method Test"
+
+
+@app.route("/newPost", methods=['POST'])
+def newPost():
+    language = {"name": request.json['name']}
+    return jsonify({"List": language})
 
 
 if __name__ == "__main__":
