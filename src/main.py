@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -16,6 +16,11 @@ def profile(username):
 @app.route("/num/<int:postId>")
 def getNumber(postId):
     return "posted Number %s" % postId
+
+
+@app.route("/postTest", methods=['POST'])
+def postTest():
+    return "Post method Test"
 
 
 if __name__ == "__main__":
