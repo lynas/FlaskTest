@@ -1,7 +1,12 @@
 from flask import Flask, request, jsonify
 from marshmallow import Schema, fields, validate
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
+app.config['MONGO_HOST'] = '127.0.0.1'
+app.config['MONGO_PORT'] = 27017
+app.config['MONGO_DBNAME'] = 'flsk'
+mongo = PyMongo(app, config_prefix='MONGO')
 
 
 class UserSchema(Schema):
@@ -19,6 +24,15 @@ class UserSchema(Schema):
 
 
 userSchema = UserSchema()
+
+
+@app.route('/db')
+def db():
+    output = []
+    for q in mongo.db.AppUser.find():
+        output.append({'firstName': q['firstName']})
+    print("")
+    return 'this is the homepage %s' % len(output)
 
 
 @app.route('/')
@@ -50,8 +64,8 @@ def newPost():
 @app.route("/users", methods=['POST'])
 def users():
     user_json = request.json
-    result = userSchema.load(user_json)
-    return jsonify({"Result": result})
+    userSchema.load(user_json)
+    return jsonify(user_json)
 
 
 if __name__ == "__main__":
