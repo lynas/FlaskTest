@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from marshmallow import Schema, fields, validate
 from flask_pymongo import PyMongo
 from controller.AppUserController import app_user_api
 from schema.UserSchema import UserSchema
@@ -12,13 +11,9 @@ app.config['MONGO_DBNAME'] = 'flsk'
 mongo = PyMongo(app, config_prefix='MONGO')
 
 
-@app.route('/db')
-def db():
-    output = []
-    for q in mongo.db.AppUser.find():
-        output.append({'firstName': q['firstName']})
-    print("")
-    return 'this is the homepage %s' % len(output)
+# @app.route('/db')
+# def db():
+#    return jsonify(getAppUserList())
 
 
 @app.route('/')

@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
+from service.AppUserService import getAppUserList
 
 app_user_api = Blueprint("app_user_api", __name__)
 
 
 @app_user_api.route("/")
 def appUserList():
-    return "Lis"
+    return jsonify(getAppUserList())
 
 
 @app_user_api.route("/<appUserId>")
