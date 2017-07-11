@@ -1,29 +1,15 @@
 from flask import Flask, request, jsonify
 from marshmallow import Schema, fields, validate
 from flask_pymongo import PyMongo
+from controller.AppUserController import app_user_api
+from schema.UserSchema import UserSchema
 
 app = Flask(__name__)
+app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.config['MONGO_HOST'] = '127.0.0.1'
 app.config['MONGO_PORT'] = 27017
 app.config['MONGO_DBNAME'] = 'flsk'
 mongo = PyMongo(app, config_prefix='MONGO')
-
-
-class UserSchema(Schema):
-    name = fields.String(required=True)
-    age = fields.Integer(
-        required=True,
-        error_messages={'required': 'Age is required.'}
-    )
-    city = fields.String(
-        required=True,
-        error_messages={'required': {'message': 'City required', 'code': 400}}
-    )
-    email = fields.Str(required=True,
-                       validate=validate.Email(error='Not a valid email address'))
-
-
-userSchema = UserSchema()
 
 
 @app.route('/db')
@@ -64,7 +50,9 @@ def newPost():
 @app.route("/users", methods=['POST'])
 def users():
     user_json = request.json
-    userSchema.load(user_json)
+    data, errors = UserSchema().load(user_json)
+    print(data)
+    print(errors)
     return jsonify(user_json)
 
 
