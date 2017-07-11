@@ -51,8 +51,8 @@ def newPost():
 def users():
     user_json = request.json
     data, errors = UserSchema().load(user_json)
-    print(data)
-    print(errors)
+    if bool(errors):
+        return jsonify(errors)
     return jsonify(user_json)
 
 
