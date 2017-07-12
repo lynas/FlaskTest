@@ -21,4 +21,4 @@ def createAppUser():
     data, errors = AppUser().load(app_user_json)
     if bool(errors):
         return jsonify(errors)
-    return jsonify(createNewAppUser(data))
+    return jsonify(createNewAppUser(data)), 201
