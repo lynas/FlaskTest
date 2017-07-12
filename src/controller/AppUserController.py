@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from service.AppUserService import getAppUserList
-from service.AppUserService import getOneAppUserByName
+from service.AppUserService import *
+from schema.AppUser import AppUser
 
 app_user_api = Blueprint("app_user_api", __name__)
 
@@ -17,5 +17,8 @@ def getAppUser(firstName):
 
 @app_user_api.route("/", methods=["POST"])
 def createAppUser():
-    message = {"message": "AppUser create success"}
-    return jsonify(message)
+    app_user_json = request.json
+    data, errors = AppUser().load(app_user_json)
+    if bool(errors):
+        return jsonify(errors)
+    return jsonify(createNewAppUser(data))
