@@ -2,19 +2,18 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from controller.AppUserController import app_user_api
 from schema.UserSchema import UserSchema
+from config.DBConfig import dbConfig
 
 app = Flask(__name__)
 app.register_blueprint(app_user_api, url_prefix='/app_users')
-app.config['MONGO_HOST'] = '127.0.0.1'
-app.config['MONGO_PORT'] = 27017
-app.config['MONGO_DBNAME'] = 'flsk'
+dbConfig(app)
+
 mongo = PyMongo(app, config_prefix='MONGO')
 
 
 @app.route('/')
 def index():
     return 'this is the homepage'
-
 
 
 @app.route("/users", methods=['POST'])

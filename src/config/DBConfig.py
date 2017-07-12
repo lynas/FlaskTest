@@ -2,7 +2,13 @@ from flask import Flask
 from flask_pymongo import PyMongo
 
 application = Flask(__name__)
-application.config['MONGO_HOST'] = '127.0.0.1'
-application.config['MONGO_PORT'] = 27017
-application.config['MONGO_DBNAME'] = 'flsk'
+
+
+def dbConfig(app):
+    app.config['MONGO_HOST'] = '127.0.0.1'
+    app.config['MONGO_PORT'] = 27017
+    app.config['MONGO_DBNAME'] = 'flsk'
+
+
+dbConfig(application)
 mongoDB = PyMongo(application, config_prefix='MONGO')
