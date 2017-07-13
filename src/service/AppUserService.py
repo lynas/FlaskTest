@@ -35,8 +35,8 @@ class AppUserService:
         data, errors = AppUser().load(q_res)
         return data
 
-        # @staticmethod
-        # def delete(appUserId):
-        #     mongoDB.db.AppUser.find_one_or_404({'_id': ObjectId(appUserId)})
-        #     mongoDB.db.AppUser.delete_one({'_id': ObjectId(appUserId)})
-        #     return {"delete": "success"}
+    @staticmethod
+    def delete(appUserId):
+        mongoDB.db.AppUser.find_one_or_404({'_id': ObjectId(appUserId)})
+        mongoDB.db.AppUser.delete_one({'_id': ObjectId(appUserId)})
+        return {"delete": "success"}
