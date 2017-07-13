@@ -22,3 +22,13 @@ def createAppUser():
     if bool(errors):
         return jsonify(errors)
     return jsonify(createNewAppUser(data)), 201
+
+
+@app_user_api.route("/<app_user_id>", methods=["PATCH"])
+def updateUser(app_user_id):
+    app_user_json = request.json
+    data, errors = AppUser().load(app_user_json)
+    if bool(errors):
+        return jsonify(errors)
+    result = updateAppUser(app_user_id, data)
+    return jsonify(result)

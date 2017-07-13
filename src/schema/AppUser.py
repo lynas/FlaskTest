@@ -9,3 +9,8 @@ class AppUser(Schema):
         required=False,
         error_messages={'required': 'Age is required.'}
     )
+
+    # def __init__(self, dictionary):
+    #     super().__init__()
+    #     for key in dictionary:
+    #         setattr(self, key, dictionary[key])
