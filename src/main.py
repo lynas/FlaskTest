@@ -25,5 +25,13 @@ def users():
     return jsonify(user_json)
 
 
+@app.before_request
+def before_request():
+    if request.path.startswith('/app_users'):
+        if 'Authorization' in request.headers:
+            print(request.headers['Authorization'])
+            return jsonify({"error": "Authentication error"})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
