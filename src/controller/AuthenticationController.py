@@ -35,14 +35,14 @@ def login():
     auth_user_json = request.json
     data, errors = AuthUser().load(auth_user_json)
     if bool(errors):
-        return jsonify(errors)
+        return jsonify(errors), 400
 
     auth_user = aus.getOneByName(auth_user_json['username'])
     if 'username' not in auth_user:
         return jsonify({
             "success": False,
             "message": "username not found"
-        })
+        }), 400
     if bcrypt.check_password_hash(auth_user['password'], auth_user_json['password']):
         return jsonify({
             "success": True
@@ -51,4 +51,4 @@ def login():
         return jsonify({
             "success": False,
             "message": "Authentication error"
-        })
+        }), 400
