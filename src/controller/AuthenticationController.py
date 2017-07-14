@@ -37,8 +37,18 @@ def login():
     if bool(errors):
         return jsonify(errors)
 
-    output = {
-        "success": bcrypt.check_password_hash(savedPass, auth_user_json['password'])
-    }
-
-    return jsonify(output)
+    auth_user = aus.getOneByName(auth_user_json['username'])
+    if 'username' not in auth_user:
+        return jsonify({
+            "success": False,
+            "message": "username not found"
+        })
+    if bcrypt.check_password_hash(auth_user['password'], auth_user_json['password']):
+        return jsonify({
+            "success": True
+        })
+    else:
+        return jsonify({
+            "success": False,
+            "message": "Authentication error"
+        })
