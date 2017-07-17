@@ -1,10 +1,14 @@
 import time
 import jwt
 import os
+import logging
 from service.TokenBlackListService import TokenBlackListService
 
 tbls = TokenBlackListService()
 secret_key = 'FLASK_SECRET_KEY'
+LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
+logging.basicConfig(filename="/tmp/flsk.log", level=logging.DEBUG, format=LOG_FORMAT)
+logger = logging.getLogger()
 
 
 def current_milli_time():
@@ -13,6 +17,7 @@ def current_milli_time():
 
 def two_day_after_milli_time():
     # 2days = 172800000 ms
+    logger.debug("2 days from now")
     return current_milli_time() + 172800000
 
 
