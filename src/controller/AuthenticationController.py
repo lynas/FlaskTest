@@ -3,13 +3,14 @@ from flask import Blueprint, request, jsonify
 from schema.AuthUser import AuthUser
 from flask_bcrypt import Bcrypt
 from service.AuthUserService import AppUserService
-import jwt
-import os
+from service.TokenBlackListService import TokenBlackListService
+from Util import encode_auth_token, decode_auth_token
 
 auth_api = Blueprint("authentication_api", __name__)
 bcrypt = Bcrypt(app)
 savedPass = ""
 aus = AppUserService()
+tbs = TokenBlackListService()
 
 
 @auth_api.route("/register", methods=["POST"])
@@ -46,16 +47,15 @@ def login():
             "message": "username not found"
         }), 400
     if bcrypt.check_password_hash(auth_user['password'], auth_user_json['password']):
-        env_secret = os.getenv('FLASK_SECRET_KEY', '')
-        if env_secret == '':
+        success, message = encode_auth_token()
+        if not success:
             return jsonify({
-                "error": "server",
-                "hint": "env_secret"
+                "success": False,
+                "token": "Server error env_secret"
             })
-        encoded = jwt.encode({'some': 'payload'}, env_secret, algorithm='HS256')
         return jsonify({
             "success": True,
-            "token": encoded.decode('utf8')
+            "token": message
         })
     else:
         return jsonify({
@@ -66,14 +66,20 @@ def login():
 
 @auth_api.route("/logout", methods=["POST"])
 def logout():
-    env_secret = os.getenv('FLASK_SECRET_KEY', '')
-    if env_secret == '':
+    token = request.headers.get('Authorization')
+    if not token:
         return jsonify({
-            "error": "server",
-            "hint": "env_secret"
+            "Error": "Authorization"
         })
-    encoded = jwt.encode({'some': 'payload'}, env_secret, algorithm='HS256')
-
-    return jsonify({
-        "token": encoded.decode('utf8')
-    })
+    else:
+        success, message = decode_auth_token(token)
+        if not success:
+            return jsonify({
+                "Error": message
+            })
+        else:
+            tbs.addToTokenBlackList(token)
+            return jsonify({
+                "success": True,
+                "message": "Logout successful!"
+            })
