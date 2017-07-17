@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify
 from schema.AuthUser import AuthUser
 from flask_bcrypt import Bcrypt
 from service.AuthUserService import AppUserService
+import jwt
+import os
 
 auth_api = Blueprint("authentication_api", __name__)
 bcrypt = Bcrypt(app)
@@ -44,11 +46,34 @@ def login():
             "message": "username not found"
         }), 400
     if bcrypt.check_password_hash(auth_user['password'], auth_user_json['password']):
+        env_secret = os.getenv('FLASK_SECRET_KEY', '')
+        if env_secret == '':
+            return jsonify({
+                "error": "server",
+                "hint": "env_secret"
+            })
+        encoded = jwt.encode({'some': 'payload'}, env_secret, algorithm='HS256')
         return jsonify({
-            "success": True
+            "success": True,
+            "token": encoded.decode('utf8')
         })
     else:
         return jsonify({
             "success": False,
-            "message": "Authentication error"
+            "message": "Username or Password incorrect"
         }), 400
+
+
+@auth_api.route("/logout", methods=["POST"])
+def logout():
+    env_secret = os.getenv('FLASK_SECRET_KEY', '')
+    if env_secret == '':
+        return jsonify({
+            "error": "server",
+            "hint": "env_secret"
+        })
+    encoded = jwt.encode({'some': 'payload'}, env_secret, algorithm='HS256')
+
+    return jsonify({
+        "token": encoded.decode('utf8')
+    })
