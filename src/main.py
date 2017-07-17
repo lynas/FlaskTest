@@ -5,6 +5,7 @@ from controller.AppUserController import app_user_api
 from controller.AuthenticationController import auth_api
 from schema.UserSchema import UserSchema
 from config.DBConfig import dbConfig
+from Util import decode_auth_token
 
 app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
@@ -30,9 +31,13 @@ def users():
 @app.before_request
 def before_request():
     if request.path.startswith('/app_users'):
-        if 'Authorization' in request.headers:
-            print(request.headers['Authorization'])
-            # return jsonify({"error": "Authentication error"})
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({"error": "Authentication error"})
+        else:
+            success, message = decode_auth_token(token)
+            if not success:
+                return jsonify({"error": "Authentication error", "message": message})
 
 
 if __name__ == "__main__":
