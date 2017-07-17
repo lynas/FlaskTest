@@ -3,12 +3,14 @@ from flask import request, jsonify
 from flask_pymongo import PyMongo
 from controller.AppUserController import app_user_api
 from controller.AuthenticationController import auth_api
+from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
 from config.DBConfig import dbConfig
 from Util import decode_auth_token
 
 app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
+app.register_blueprint(script_api, url_prefix='/script')
 dbConfig(app)
 
 mongo = PyMongo(app, config_prefix='MONGO')
