@@ -84,7 +84,9 @@ paths:
         '200':
           description: successful operation
           schema:
-            $ref: '#/definitions/LoginResponse'
+            type: array
+            items:
+              $ref: '#/definitions/AppUser'
         '400':
           description: Username or pasword not correct
         '405':
@@ -106,6 +108,17 @@ securityDefinitions:
     name: api_key
     in: header
 definitions:
+  AppUser:
+    type: object
+    properties:
+      _id:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      age:
+        type: integer
   General:
     type: object
     properties:
