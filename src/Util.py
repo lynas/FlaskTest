@@ -2,9 +2,7 @@ import time
 import jwt
 import os
 import logging
-from service.TokenBlackListService import TokenBlackListService
 
-tbls = TokenBlackListService()
 secret_key = 'FLASK_SECRET_KEY'
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 logging.basicConfig(filename="/tmp/flsk.log", level=logging.DEBUG, format=LOG_FORMAT)
@@ -22,7 +20,7 @@ def two_day_after_milli_time():
 
 
 def encode_auth_token():
-    env_secret = os.getenv(secret_key, '')
+    env_secret = os.getenv(secret_key, '1234')
     if env_secret == '':
         return False, "Server error env_secret"
     encoded = jwt.encode(
@@ -34,17 +32,18 @@ def encode_auth_token():
 
 
 def decode_auth_token(auth_token):
+    from service.TokenBlackListService import TokenBlackListService
     """
     Validates the auth token
     :param auth_token:
     :return: integer|string
     """
-    env_secret = os.getenv(secret_key, '')
+    env_secret = os.getenv(secret_key, '1234')
     if env_secret == '':
         return False, "Server Error, env_secret"
     try:
         payload = jwt.decode(auth_token, env_secret)
-        is_blacklisted_token = tbls.isBlackListed(auth_token)
+        is_blacklisted_token = TokenBlackListService.isBlackListed(auth_token)
         if is_blacklisted_token:
             return False, 'Token blacklisted. Please log in again.'
         else:

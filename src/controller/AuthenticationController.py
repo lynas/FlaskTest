@@ -1,4 +1,3 @@
-from config.AppConfig import app
 from flask import Blueprint, request, jsonify
 from schema.AuthUser import AuthUser
 from flask_bcrypt import Bcrypt
@@ -7,7 +6,7 @@ from service.TokenBlackListService import TokenBlackListService
 from Util import encode_auth_token, decode_auth_token
 
 auth_api = Blueprint("authentication_api", __name__)
-bcrypt = Bcrypt(app)
+bcrypt = Bcrypt()
 savedPass = ""
 aus = AppUserService()
 tbs = TokenBlackListService()

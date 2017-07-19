@@ -1,18 +1,20 @@
-from config.AppConfig import app
+from flask import Flask
 from flask import request, jsonify
 from flask_pymongo import PyMongo
 from controller.AppUserController import app_user_api
 from controller.AuthenticationController import auth_api
 from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
-from config.DBConfig import dbConfig
 from Util import decode_auth_token
 
+app = Flask(__name__)
+app.config['MONGO_HOST'] = '127.0.0.1'
+app.config['MONGO_PORT'] = 27017
+app.config['MONGO_DBNAME'] = 'flsk'
 app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(script_api, url_prefix='/script')
-dbConfig(app)
-PyMongo(app)
+dbCon = PyMongo(app)
 
 
 @app.route('/')
