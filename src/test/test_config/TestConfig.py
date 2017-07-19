@@ -1,16 +1,12 @@
 import unittest
-from flask_testing import TestCase
-from config.AppConfig import app
+from main import app
 
 
-class TestConfig(TestCase):
-    def create_app(self):
-        app.config['DEBUG'] = True
-        app.config['TESTING'] = True
-        return app
-
-    def test_one(self):
-        assert 2 == 2
+class TestConfig(unittest.TestCase):
+    def test_index(self):
+        tester = app.test_client(self)
+        response = tester.get('/', content_type='html/text')
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
