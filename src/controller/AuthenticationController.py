@@ -38,7 +38,7 @@ def login():
     auth_user_json = request.json
     data, errors = AuthUser().load(auth_user_json)
     if bool(errors):
-        return jsonify(errors), 400
+        return jsonify(errors), 405
 
     auth_user = aus.getOneByName(auth_user_json['username'])
     if 'username' not in auth_user:
