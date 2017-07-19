@@ -19,7 +19,9 @@ dbCon = PyMongo(app)
 
 @app.route('/')
 def index():
-    return 'this is the homepage'
+    return jsonify({
+        "success": True
+    })
 
 
 @app.route("/users", methods=['POST'])
