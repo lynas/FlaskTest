@@ -13,4 +13,4 @@ def dbConfig(app):
 
 
 dbConfig(application)
-mongoDB = PyMongo(application, config_prefix='MONGO')
+dbCon = PyMongo(application)

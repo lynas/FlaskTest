@@ -12,8 +12,7 @@ app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(script_api, url_prefix='/script')
 dbConfig(app)
-
-mongo = PyMongo(app, config_prefix='MONGO')
+PyMongo(app)
 
 
 @app.route('/')
