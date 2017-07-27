@@ -8,9 +8,10 @@ from schema.UserSchema import UserSchema
 from Util import decode_auth_token
 
 app = Flask(__name__)
-app.config['MONGO_HOST'] = '127.0.0.1'
-app.config['MONGO_PORT'] = 27017
-app.config['MONGO_DBNAME'] = 'flsk'
+# app.config['MONGO_HOST'] = '127.0.0.1'
+# app.config['MONGO_PORT'] = 27017
+# app.config['MONGO_DBNAME'] = 'flsk'
+app.config.from_envvar('APP_SETTINGS')
 app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(script_api, url_prefix='/script')
@@ -33,16 +34,16 @@ def users():
     return jsonify(user_json)
 
 
-@app.before_request
-def before_request():
-    if request.path.startswith('/app_users'):
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify({"error": "Authentication error"})
-        else:
-            success, message = decode_auth_token(token)
-            if not success:
-                return jsonify({"error": "Authentication error", "message": message})
+# @app.before_request
+# def before_request():
+#     if request.path.startswith('/app_users'):
+#         token = request.headers.get('Authorization')
+#         if not token:
+#             return jsonify({"error": "Authentication error"})
+#         else:
+#             success, message = decode_auth_token(token)
+#             if not success:
+#                 return jsonify({"error": "Authentication error", "message": message})
 
 
 if __name__ == "__main__":
