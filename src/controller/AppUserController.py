@@ -1,41 +1,39 @@
-from flask import Blueprint, request, jsonify
+from flask_classy import FlaskView, route, request
+from flask import jsonify
 from service.AppUserService import AppUserService
 from schema.AppUser import AppUser
 
-app_user_api = Blueprint("app_user_api", __name__)
-aus = AppUserService()
 
+class AppUserView(FlaskView):
+    def __init__(self):
+        self.app_user_service = AppUserService()
 
-@app_user_api.route("/")
-def getAll():
-    return jsonify(aus.getAll())
+    @route("/")
+    def get_all(self):
+        return jsonify(self.app_user_service.getAll())
 
+    @route("/<first_name>")
+    def get(self, first_name):
+        return jsonify(self.app_user_service.getOneAppUserByName(first_name))
 
-@app_user_api.route("/<firstName>")
-def get(firstName):
-    return jsonify(aus.getOneAppUserByName(firstName))
+    @route("/", methods=["POST"])
+    def create(self):
+        app_user_json = request.json
+        data, errors = AppUser().load(app_user_json)
+        if bool(errors):
+            return jsonify(errors)
+        return jsonify(self.app_user_service.createNewAppUser(data)), 201
 
+    @route("/<app_user_id>", methods=["PATCH"])
+    def update(self, app_user_id):
+        app_user_json = request.json
+        data, errors = AppUser().load(app_user_json)
+        if bool(errors):
+            return jsonify(errors)
+        result = self.app_user_service.updateAppUser(app_user_id, data)
+        return jsonify(result)
 
-@app_user_api.route("/", methods=["POST"])
-def create():
-    app_user_json = request.json
-    data, errors = AppUser().load(app_user_json)
-    if bool(errors):
-        return jsonify(errors)
-    return jsonify(aus.createNewAppUser(data)), 201
-
-
-@app_user_api.route("/<app_user_id>", methods=["PATCH"])
-def update(app_user_id):
-    app_user_json = request.json
-    data, errors = AppUser().load(app_user_json)
-    if bool(errors):
-        return jsonify(errors)
-    result = aus.updateAppUser(app_user_id, data)
-    return jsonify(result)
-
-
-@app_user_api.route("/<app_user_id>", methods=["DELETE"])
-def delete(app_user_id):
-    result = aus.delete(app_user_id)
-    return jsonify(result)
+    @route("/<app_user_id>", methods=["DELETE"])
+    def delete(self, app_user_id):
+        result = self.app_user_service.delete(app_user_id)
+        return jsonify(result)

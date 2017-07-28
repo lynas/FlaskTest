@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request, jsonify
 from flask_pymongo import PyMongo
-from controller.AppUserController import app_user_api
+from controller.AppUserController import AppUserView
 from controller.AuthenticationController import auth_api
 from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
@@ -9,10 +9,10 @@ from Util import decode_auth_token
 
 app = Flask(__name__)
 app.config.from_envvar('APP_SETTINGS')
-app.register_blueprint(app_user_api, url_prefix='/app_users')
 app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(script_api, url_prefix='/script')
 dbCon = PyMongo(app)
+AppUserView.register(app, route_prefix="/v1", route_base="/app_users")
 
 
 @app.route('/')
@@ -33,7 +33,7 @@ def users():
 
 @app.before_request
 def before_request():
-    if request.path.startswith('/app_users'):
+    if request.path.startswith('/v1/app_users'):
         token = request.headers.get('Authorization')
         if not token:
             return jsonify({"error": "Authentication error"})
