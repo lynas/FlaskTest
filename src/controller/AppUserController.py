@@ -4,7 +4,7 @@ from service.AppUserService import AppUserService
 from schema.AppUser import AppUser
 
 
-class AppUserView(FlaskView):
+class AppUserController(FlaskView):
     def __init__(self):
         self.app_user_service = AppUserService()
 
