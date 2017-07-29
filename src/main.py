@@ -2,17 +2,17 @@ from flask import Flask
 from flask import request, jsonify
 from flask_pymongo import PyMongo
 from controller.AppUserController import AppUserController
-from controller.AuthenticationController import auth_api
+from controller.AuthenticationController import AuthenticationController
 from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
 from Util import decode_auth_token
 
 app = Flask(__name__)
 app.config.from_envvar('APP_SETTINGS')
-app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(script_api, url_prefix='/script')
 dbCon = PyMongo(app)
 AppUserController.register(app, route_prefix="/v1", route_base="/app_users")
+AuthenticationController.register(app, route_prefix="/v1", route_base="/auth")
 
 
 @app.route('/')
