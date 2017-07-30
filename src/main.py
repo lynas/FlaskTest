@@ -6,7 +6,7 @@ from controller.AuthenticationController import AuthenticationController
 from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
 from Util import decode_auth_token
-from flask_inject import Inject, inject
+from lib.flask_inject import Inject, inject
 
 app = Flask(__name__)
 app.config['MONGO_HOST'] = '127.0.0.1'

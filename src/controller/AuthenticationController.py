@@ -5,7 +5,7 @@ from service.AuthUserService import AppUserService
 from service.TokenBlackListService import TokenBlackListService
 from Util import encode_auth_token, decode_auth_token
 from flask_classy import FlaskView, route
-from flask_inject import inject
+from lib.flask_inject import inject
 
 
 class AuthenticationController(FlaskView):
