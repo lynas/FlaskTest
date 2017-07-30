@@ -11,19 +11,16 @@ from lib.flask_inject import inject
 class AuthenticationController(FlaskView):
     def __init__(self):
         self.bcrypt = Bcrypt()
-        self.savedPass = ""
-        self.aus = AppUserService()
         self.tbs = TokenBlackListService()
 
     @route("/register", methods=["POST"])
-    @inject("abc")
-    def registers(self, abc):
-        print(abc)
+    @inject("aus")
+    def registers(self, aus: AppUserService):
         auth_user_json = request.json
         data, errors = AuthUser().load(auth_user_json)
         if bool(errors):
             return jsonify(errors)
-        auth_user = self.aus.getOneByName(auth_user_json['username'])
+        auth_user = aus.getOneByName(auth_user_json['username'])
         if 'username' in auth_user:
             return jsonify({
                 "success": False,
@@ -31,19 +28,20 @@ class AuthenticationController(FlaskView):
             })
         pw_hash = self.bcrypt.generate_password_hash(auth_user_json['password'])
         data['password'] = pw_hash.decode('utf8')
-        self.aus.create(data)
+        aus.create(data)
         return jsonify({
             "success": True
         }), 201
 
     @route("/login", methods=["POST"])
-    def login(self):
+    @inject("aus")
+    def login(self, aus: AppUserService):
         auth_user_json = request.json
         data, errors = AuthUser().load(auth_user_json)
         if bool(errors):
             return jsonify(errors), 405
 
-        auth_user = self.aus.getOneByName(auth_user_json['username'])
+        auth_user = aus.getOneByName(auth_user_json['username'])
         if 'username' not in auth_user:
             return jsonify({
                 "success": False,

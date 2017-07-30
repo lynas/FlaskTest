@@ -7,6 +7,7 @@ from controller.ScriptController import script_api
 from schema.UserSchema import UserSchema
 from Util import decode_auth_token
 from lib.flask_inject import Inject, inject
+from service.AuthUserService import AppUserService
 
 app = Flask(__name__)
 app.config['MONGO_HOST'] = '127.0.0.1'
@@ -14,10 +15,14 @@ app.config['MONGO_PORT'] = 27017
 app.config['MONGO_DBNAME'] = 'flsk'
 app.register_blueprint(script_api, url_prefix='/script')
 dbCon = PyMongo(app)
+
+inj = Inject(app)
+aus = AppUserService()
+inj.map(aus=aus)
+
+
 AppUserController.register(app, route_prefix="/v1", route_base="/app_users")
 AuthenticationController.register(app, route_prefix="/v1", route_base="/auth")
-inj = Inject(app)
-inj.map(abc="def")
 
 
 @app.route('/')
@@ -51,5 +56,4 @@ def before_request(injector):
 
 
 if __name__ == "__main__":
-
     app.run(debug=True)
