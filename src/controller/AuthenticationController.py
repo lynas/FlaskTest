@@ -4,12 +4,11 @@ from flask_bcrypt import Bcrypt
 from service.AuthUserService import AppUserService
 from service.TokenBlackListService import TokenBlackListService
 from Util import encode_auth_token, decode_auth_token
-from injector import inject
 from flask_classy import FlaskView, route
+from flask_inject import inject
 
 
 class AuthenticationController(FlaskView):
-    @inject
     def __init__(self):
         self.bcrypt = Bcrypt()
         self.savedPass = ""
@@ -17,7 +16,9 @@ class AuthenticationController(FlaskView):
         self.tbs = TokenBlackListService()
 
     @route("/register", methods=["POST"])
-    def registers(self):
+    @inject("abc")
+    def registers(self, abc):
+        print(abc)
         auth_user_json = request.json
         data, errors = AuthUser().load(auth_user_json)
         if bool(errors):
